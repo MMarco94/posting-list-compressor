@@ -13,6 +13,9 @@ class SinglePassClusterer(val minSimilarity: Double, val maxClusterCount: Int) :
         documents
             .sortedByDescending { it.words.size }
             .forEachIndexed { index, d ->
+                if(index % 10000 == 0){
+                    println("Processed $index documents")
+                }
                 val closer = ret.keys.maxBy { similarity.getSimilarity(it, d) }
                 when {
                     closer == null -> ret[d] = mutableSetOf(d)

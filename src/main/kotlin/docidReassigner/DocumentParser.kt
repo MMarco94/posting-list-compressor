@@ -1,17 +1,17 @@
 package docidReassigner
 
-import java.io.File
+import java.io.InputStream
 
 interface DocumentParser {
-    fun parse(file: File): Sequence<Document>
+    fun parse(input: InputStream): Sequence<Document>
 }
 
 /**
  * A [DocumentParser] that parses documents is SMART format
  */
 object SmartDocumentParser : DocumentParser {
-    override fun parse(file: File): Sequence<Document> {
-        return file.readText().split("\n\n".toRegex())
+    override fun parse(input: InputStream): Sequence<Document> {
+        return input.bufferedReader().readText().split("\n\n".toRegex())
             .asSequence()
             .map { it.trim() }
             .filter { it.isNotEmpty() }
