@@ -8,10 +8,20 @@ cluster have consequent id (the order of documents inside a cluster is not taken
 By doing so, we expect that the average D-Gap in the posting list will becomes smaller, thus reducing
 the number of bits required to store it.
 
+# Implementation details
+To achieve this it is necessary to solve a clustering problem between a large number of documents, and a TSP between a potentially large
+number of clusters. Some compromises have been made to allow the code to run on a normal desktop computer in a reasonable amount of time.  
+In particular:
+- The Christofides algorithm for solving the TSP has been used. It's a 1.5 approximation algorithm that works on a metric space (the Jaccard similarity is metric)
+- The number of clusters has been limited to 2500, to limit the size of the graph for the TSP
+- A simple stream clustering algorithm has been used to divide the documents in clusters
+
+Those limitations could be solved by using other algorithm implementations, but that's beside the purpose of this project. 
+
 # Results
-To measure how good this technique is, the dataset http://www.ai.mit.edu/projects/jmlr/papers/volume5/lewis04a/lyrl2004_rcv1v2_README.htm
+To measure how good this technique is, the dataset available at http://www.ai.mit.edu/projects/jmlr/papers/volume5/lewis04a/lyrl2004_rcv1v2_README.htm
 has been analyzed.  
-The size of the posting lists has been measured using different encodings, with and without the id reassigned
+The size of the posting lists has been measured using different encodings, with and without the id reassigned.
 
 | Encoding         | Original size | Size with id reassigned | Saving       |Saving % |
 | ---------------- | -------------:|------------------------:| ------------:| ------:|
