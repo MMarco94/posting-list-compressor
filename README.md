@@ -29,7 +29,7 @@ The size of the posting lists has been measured using different encodings, with 
 | Elias Gamma Code | 62.16 MB      | 47.27 MB                | 14 MB 917 KB | 23.95% |
 | Elias Delta Code | 52.71 MB      | 39.48 MB                | 13 MB 229 KB | 25.10% |
 
-As you can see, every encoding has been improved and some space has been saved. Most remarkably, both Elias encoding
+As you can see, every encoding has been improved and some space has been saved. Most remarkably, both Elias encodings
 saw an improvement of about 25%.  
 This is particularly impressive considering that for time and memory constraints, the clustering and TSP algorithms used were
 sub-optimal.
