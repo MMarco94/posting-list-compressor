@@ -1,7 +1,7 @@
 package docidReassigner
 
 /**
- * A class that computes the size of the posting lists using the given [DGapEncoder]
+ * A class that computes the size of the postings list using the given [DGapEncoder]
  */
 class DgapPostingComputer(
     val encoder: DGapEncoder

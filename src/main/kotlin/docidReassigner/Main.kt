@@ -41,7 +41,7 @@ val encodings = setOf(VBCode, EliasGammaCode, EliasDeltaCode)
 
 /**
  * This is the main. It downloads the documents (if needed) and computes the initial positing lists size.
- * Then performs the clustering, the TSP, and computes the new posting lists size.
+ * Then performs the clustering, the TSP, and computes the new postings list size.
  *
  * It may take several hours to complete. To try on a smaller number of documents, [limit] can be decreased
  */
@@ -49,7 +49,7 @@ fun main() {
     println("Computing initial d-gap...")
     val initialSize = time {
         encodings.associateWith { e ->
-            computePostingListsSize(IdentityRemapper, e)
+            computePostingsListSize(IdentityRemapper, e)
         }
     }
     initialSize.forEach { (e, size) ->
@@ -68,16 +68,16 @@ fun main() {
     println("Computing new d-gap...")
     time {
         encodings.forEach { e ->
-            val postingsSize = computePostingListsSize(tspRemapper, e)
+            val postingsSize = computePostingsListSize(tspRemapper, e)
             println("-${e.javaClass.simpleName} would use ${formatBit(postingsSize)}\t\tSaved ${formatBit(initialSize.getValue(e) - postingsSize)}")
         }
     }
 }
 
 /**
- * Given a [DocumentIdRemapper] and a [DGapEncoder], computes the size of the posting lists
+ * Given a [DocumentIdRemapper] and a [DGapEncoder], computes the size of the postings list
  */
-private fun computePostingListsSize(idRemapper: DocumentIdRemapper, encoder: DGapEncoder): Long {
+private fun computePostingsListSize(idRemapper: DocumentIdRemapper, encoder: DGapEncoder): Long {
     val posting = DgapPostingComputer(encoder)
     documents
         .map { idRemapper.remap(it) }
