@@ -1,14 +1,23 @@
 package docidReassigner
 
-
+/**
+ * An interface that changes the id of a document
+ */
 interface DocumentIdRemapper {
     fun remap(document: Document): Document
 }
 
+/**
+ * A [DocumentIdRemapper] that doesn't change the id
+ */
 object IdentityRemapper : DocumentIdRemapper {
     override fun remap(document: Document) = document
 }
 
+/**
+ * A [DocumentIdRemapper] that changes the documents id by assigning consequent
+ * ids to documents in the same cluster.
+ */
 class TSPRemapper(
     val clusters: Set<DocumentGroup>,
     val similarity: Similarity

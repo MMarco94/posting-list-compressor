@@ -5,29 +5,51 @@ import java.net.URL
 import java.time.Duration
 import java.time.Instant
 
-val documentsRoot = File("docs")
-val parser = SmartDocumentParser
+/**
+ * The similarity algorithm to use
+ */
 val similarity = JaccardSimilarity
+/**
+ * The clustering algorithm to use
+ */
 val clusterer = SinglePassClusterer(0.10, 2500)
+/**
+ * The sources for the documents
+ */
 val sources = sequenceOf(
-    GzippedSource(File(documentsRoot, "doc1"), URL("http://www.ai.mit.edu/projects/jmlr/papers/volume5/lewis04a/a12-token-files/lyrl2004_tokens_test_pt0.dat.gz")),
-    GzippedSource(File(documentsRoot, "doc2"), URL("http://www.ai.mit.edu/projects/jmlr/papers/volume5/lewis04a/a12-token-files/lyrl2004_tokens_test_pt1.dat.gz")),
-    GzippedSource(File(documentsRoot, "doc3"), URL("http://www.ai.mit.edu/projects/jmlr/papers/volume5/lewis04a/a12-token-files/lyrl2004_tokens_test_pt2.dat.gz")),
-    GzippedSource(File(documentsRoot, "doc4"), URL("http://www.ai.mit.edu/projects/jmlr/papers/volume5/lewis04a/a12-token-files/lyrl2004_tokens_test_pt3.dat.gz"))
+    GzippedSource(File("docs/doc1"), URL("http://www.ai.mit.edu/projects/jmlr/papers/volume5/lewis04a/a12-token-files/lyrl2004_tokens_test_pt0.dat.gz")),
+    GzippedSource(File("docs/doc2"), URL("http://www.ai.mit.edu/projects/jmlr/papers/volume5/lewis04a/a12-token-files/lyrl2004_tokens_test_pt1.dat.gz")),
+    GzippedSource(File("docs/doc3"), URL("http://www.ai.mit.edu/projects/jmlr/papers/volume5/lewis04a/a12-token-files/lyrl2004_tokens_test_pt2.dat.gz")),
+    GzippedSource(File("docs/doc4"), URL("http://www.ai.mit.edu/projects/jmlr/papers/volume5/lewis04a/a12-token-files/lyrl2004_tokens_test_pt3.dat.gz"))
 )
+/**
+ * The limit on how many document to consider.
+ */
+const val limit = Integer.MAX_VALUE
+/**
+ * All the documents
+ */
 val documents = sources.map {
     it.getDataStream()
 }.flatMap {
-    parser.parse(it)
-}.toList().asSequence()
+    SmartDocumentParser.parse(it)
+}.take(limit).toList().asSequence()
+/**
+ * The encodings to measure
+ */
 val encodings = setOf(VBCode, EliasGammaCode, EliasDeltaCode)
 
+/**
+ * This is the main. It downloads the documents (if needed) and computes the initial positing lists size.
+ * Then performs the clustering, the TSP, and computes the new posting lists size.
+ *
+ * It may take several hours to complete. To try on a smaller number of documents, [limit] can be decreased
+ */
 fun main() {
-    //println("Documents count = ${documents.count()}") //Count = 781265
     println("Computing initial d-gap...")
     val initialSize = time {
         encodings.associateWith { e ->
-            computePostings(IdentityRemapper, e).totalSize
+            computePostingListsSize(IdentityRemapper, e)
         }
     }
     initialSize.forEach { (e, size) ->
@@ -46,13 +68,16 @@ fun main() {
     println("Computing new d-gap...")
     time {
         encodings.forEach { e ->
-            val postings = computePostings(tspRemapper, e)
-            println("-${e.javaClass.simpleName} would use ${formatBit(postings.totalSize)}\t\tSaved ${formatBit(initialSize.getValue(e) - postings.totalSize)}")
+            val postingsSize = computePostingListsSize(tspRemapper, e)
+            println("-${e.javaClass.simpleName} would use ${formatBit(postingsSize)}\t\tSaved ${formatBit(initialSize.getValue(e) - postingsSize)}")
         }
     }
 }
 
-private fun computePostings(idRemapper: DocumentIdRemapper, encoder: DGapEncoder): DgapPostingComputer {
+/**
+ * Given a [DocumentIdRemapper] and a [DGapEncoder], computes the size of the posting lists
+ */
+private fun computePostingListsSize(idRemapper: DocumentIdRemapper, encoder: DGapEncoder): Long {
     val posting = DgapPostingComputer(encoder)
     documents
         .map { idRemapper.remap(it) }
@@ -62,9 +87,12 @@ private fun computePostings(idRemapper: DocumentIdRemapper, encoder: DGapEncoder
         }.forEach { (doc, term) ->
             posting.addPosting(doc, term)
         }
-    return posting
+    return posting.totalSize
 }
 
+/**
+ * Measures the time it takes to execute [f]
+ */
 private fun <T> time(f: () -> T): T {
     val start = Instant.now()
     val ret = f()

@@ -6,10 +6,16 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.zip.GZIPInputStream
 
+/**
+ * A Source of documents
+ */
 interface Source {
     fun getDataStream(): InputStream
 }
 
+/**
+ * An onliune source that contains documents in gzip format
+ */
 class GzippedSource(
     val file: File,
     val url: URL

@@ -2,12 +2,15 @@ package docidReassigner
 
 import java.io.InputStream
 
+/**
+ * An interface that parses document that come from an [InputStream]
+ */
 interface DocumentParser {
     fun parse(input: InputStream): Sequence<Document>
 }
 
 /**
- * A [DocumentParser] that parses documents is SMART format
+ * A [DocumentParser] that parses documents in SMART format
  */
 object SmartDocumentParser : DocumentParser {
     override fun parse(input: InputStream): Sequence<Document> {

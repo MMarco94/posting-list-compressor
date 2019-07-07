@@ -5,6 +5,9 @@ import org.jgrapht.graph.DefaultUndirectedWeightedGraph
 import org.jgrapht.graph.DefaultWeightedEdge
 import kotlin.math.ceil
 
+/**
+ * Creates an instance of the TSP problem using the Christofides algorithm
+ */
 internal fun tspSolver(nodeSetupper: DefaultUndirectedWeightedGraph<DocumentGroup, DefaultWeightedEdge>.() -> Unit): Sequence<DocumentGroup> {
     val graph = DefaultUndirectedWeightedGraph<DocumentGroup, DefaultWeightedEdge>(DefaultWeightedEdge::class.java).apply(nodeSetupper)
     return ChristofidesThreeHalvesApproxMetricTSP<DocumentGroup, DefaultWeightedEdge>()
@@ -14,6 +17,10 @@ internal fun tspSolver(nodeSetupper: DefaultUndirectedWeightedGraph<DocumentGrou
 }
 
 private val units = listOf("bytes", "KB", "MB", "GB")
+
+/**
+ * Formats the given number of [bits].
+ */
 internal fun formatBit(bits: Long): String {
     if (bits < 0) return "-" + formatBit(-bits)
     if (bits == 1L) return "1 bit"
