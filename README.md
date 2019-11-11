@@ -25,11 +25,11 @@ The size of the postings list has been measured using different encodings, with 
 
 | Encoding         | Original size | Size with id reassigned | Saving       |Saving % |
 | ---------------- | -------------:|------------------------:| ------------:| ------:|
-| VBCode           | 68.51 MB      | 64.90 MB                |  3 MB 628 KB |  5.27% |
-| Elias Gamma Code | 62.16 MB      | 47.27 MB                | 14 MB 917 KB | 23.95% |
-| Elias Delta Code | 52.71 MB      | 39.48 MB                | 13 MB 229 KB | 25.10% |
+| VBCode           | 68.51 MB      | 64.90 MB                |  3 MB 638 KB |  5.31% |
+| Elias Gamma Code | 63.20 MB      | 47.01 MB                | 14 MB 13 KB | 22.17% |
+| Elias Delta Code | 54.51 MB      | 42.44 MB                | 12 MB 72 KB | 22.14% |
 
 As you can see, every encoding has been improved and some space has been saved. Most remarkably, both Elias encodings
-saw an improvement of about 25%.  
+saw an improvement of about 22%. 
 This is particularly impressive considering that for time and memory constraints, the clustering and TSP algorithms used were
 sub-optimal.

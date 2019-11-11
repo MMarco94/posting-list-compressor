@@ -60,6 +60,8 @@ abstract class AbstractEliasCode(
         if (gap < 0) throw IllegalStateException()
         if (gap == 0L) {
             throw UnsupportedOperationException("Cannot encode 0")
+        } else if (gap == 1L) {
+            return 1L
         }
         val offset = ceil(log2(gap + 1.0)).toInt() - 1
         val length = if (offset == 0) 0 else lengthEncoder.getBitTaken(offset.toLong())

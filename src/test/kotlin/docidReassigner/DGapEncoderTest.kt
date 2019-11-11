@@ -17,7 +17,7 @@ class DGapEncoderTest {
         assertEquals(2, UnaryCode.getBitTaken(1))
 
         //Elias gamma
-        assertEquals(0, EliasGammaCode.getBitTaken(1))
+        assertEquals(1, EliasGammaCode.getBitTaken(1))
         assertEquals(3, EliasGammaCode.getBitTaken(2))
         assertEquals(3, EliasGammaCode.getBitTaken(3))
         assertEquals(5, EliasGammaCode.getBitTaken(4))
